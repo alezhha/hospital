@@ -16,7 +16,7 @@ class Hospital(models.Model):
     region = models.CharField('Область', max_length=10, choices=REGION, default="Osh")
     ocpo = models.CharField("ОКПО", max_length=4, unique=True)
     gov = models.BooleanField("Государственное", default=False)
-    doctor = models.ForeignKey("Maindoctor", on_delete=models.CASCADE, related_name="Врач", verbose_name="Врачи")
+    doctor = models.OneToOneField("Maindoctor", on_delete=models.PROTECT, related_name="Врач", verbose_name="Врачи")
     maxn = models.IntegerField(verbose_name="Максимальное количество сотрудников", default=100)
     nurse = models.ForeignKey("Nurse", on_delete=models.CASCADE, verbose_name="Медсёстры")
 
@@ -54,12 +54,16 @@ class Maindoctor(models.Model):
         verbose_name_plural = "Главрачи"
 
 class Doctor(models.Model):
-    position = models.ForeignKey("Hospital", on_delete=models.CASCADE, related_name="Больница", verbose_name="Больница")
+    POSITION = [
+        ("therapist", "Терапевт"),
+        ("surgeon", "Хирург")
+    ]
+    position = models.CharField("Терапевт/Хирург", max_length=255, choices=POSITION, default="therapist")
     pin = models.CharField("Пин",max_length=14)
     name = models.CharField("ФИО",max_length=100)
     birthdate = models.DateField("Дата рождения")
     phone = models.CharField("Номер Телефона",max_length=10)
-    hospital = models.CharField("Больница",max_length=10)
+    hospital = models.ForeignKey("Hospital", on_delete=models.CASCADE, related_name="Больница", verbose_name="Больница", default=1)
     nurse = models.ForeignKey("Nurse", on_delete=models.CASCADE, verbose_name="Медсестра")
 
     def __str__(self):
