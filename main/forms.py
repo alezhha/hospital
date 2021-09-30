@@ -6,8 +6,7 @@ class AddPatient(forms.ModelForm):
         model = Patient
         fields = "__all__"
 
-
-class AddNurses(forms.ModelForm):
+class AddNurse(forms.ModelForm):
     class Meta:
         model = Nurse
         fields = "__all__"
